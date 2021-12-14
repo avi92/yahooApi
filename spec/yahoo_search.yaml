@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  version: "8"
+  title: Yahoo Stock API
+servers:
+  - url: https://query2.finance.yahoo.com/v1/finance
+    description: Yahoo Rest API Base Url
+paths:
+  /search:
+    get:
+      summary: returns data
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: true
+          description: search literal
+      responses:
+        '200':
+          description: A JSON array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      properties:
+        quotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quote'
+    Quote:
+      type: object
+      properties:
+        exchange:
+          type: string
+        shortname:
+          type: string
+        quoteType:
+          type: string
+        symbol:
+          type: string
+        index:
+          type: string
+        score:
+          type: number
+        typeDisp:
+          type: string
+        longname:
+          type: string
+        exchDisp:
+          type: string
+        isYahooFinance:
+          type: boolean

@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  version: "7"
+  title: Yahoo Stock API
+servers:
+  - url: https://query1.finance.yahoo.com/v7/finance
+    description: Yahoo Rest API Base Url
+paths:
+  /quote:
+    get:
+      summary: returns data
+      parameters:
+        - in: query
+          name: symbols
+          schema:
+            type: string
+          required: true
+          description: stock symbol
+        - in: query
+          name: interval
+          schema:
+            type: string
+          description: interval
+        - in: query
+          name: range
+          schema:
+            type: string
+          description: range
+      responses:
+        '200':
+          description: A JSON array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+components:
+  schemas:
+    QuoteResponse:
+      type: object
+      properties:
+        quoteResponse:
+          $ref: '#/components/schemas/QuoteResult'
+    QuoteResult:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quote'
+        error:
+          $ref: '#/components/schemas/Error'
+    Quote:
+      type: object
+      properties:
+        language:
+          type: string
+        region:
+          type: string
+        quoteType:
+          type: string
+        quoteSourceName:
+          type: string
+        triggerable:
+          type: boolean
+        currency:
+          type: string
+        firstTradeDateMilliseconds:
+          type: integer
+          format: int64
+        priceHint:
+          type: integer
+        regularMarketChange:
+          type: integer
+        regularMarketChangePercent:
+          type: number
+        regularMarketTime:
+          type: integer
+          format: int64
+        regularMarketPrice:
+          type: number
+        regularMarketDayHigh:
+          type: number
+        regularMarketDayRange:
+          type: string
+        regularMarketDayLow:
+          type: number
+        regularMarketVolume:
+          type: integer
+        regularMarketPreviousClose:
+          type: number
+        bid:
+          type: number
+        ask:
+          type: number
+        bidSize:
+          type: integer
+        askSize:
+          type: integer
+        fullExchangeName:
+          type: string
+        financialCurrency:
+          type: string
+        regularMarketOpen:
+          type: number
+        averageDailyVolume3Month:
+          type: integer
+        averageDailyVolume10Day:
+          type: integer
+        fiftyTwoWeekLowChange:
+          type: number
+        fiftyTwoWeekLowChangePercent:
+          type: number
+        fiftyTwoWeekRange:
+          type: string
+        fiftyTwoWeekHighChange:
+          type: number
+        fiftyTwoWeekHighChangePercent:
+          type: number
+        fiftyTwoWeekLow:
+          type: number
+        fiftyTwoWeekHigh:
+          type: number
+        earningsTimestamp:
+          type: integer
+          format: int64
+        earningsTimestampStart:
+          type: integer
+          format: int64
+        earningsTimestampEnd:
+          type: integer
+          format: int64
+        trailingAnnualDividendRate:
+          type: number
+        trailingPE:
+          type: number
+        trailingAnnualDividendYield:
+          type: number
+        epsTrailingTwelveMonths:
+          type: number
+        epsForward:
+          type: number
+        sharesOutstanding:
+          type: integer
+        bookValue:
+          type: number
+        fiftyDayAverage:
+          type: number
+        fiftyDayAverageChange:
+          type: number
+        fiftyDayAverageChangePercent:
+          type: number
+        twoHundredDayAverage:
+          type: number
+        twoHundredDayAverageChange:
+          type: number
+        twoHundredDayAverageChangePercent:
+          type: number
+        marketCap:
+          type: integer
+          format: int64
+        forwardPE:
+          type: number
+        priceToBook:
+          type: number
+        sourceInterval:
+          type: integer
+        exchangeDataDelayedBy:
+          type: integer
+        averageAnalystRating:
+          type: string
+        tradeable:
+          type: boolean
+        exchange:
+          type: string
+        longName:
+          type: string
+        messageBoardId:
+          type: string
+        exchangeTimezoneName:
+          type: string
+        exchangeTimezoneShortName:
+          type: string
+        gmtOffSetMilliseconds:
+          type: integer
+          format: int64
+        market:
+          type: string
+        esgPopulated:
+          type: boolean
+        marketState:
+          type: string
+        shortName:
+          type: string
+        symbol:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string

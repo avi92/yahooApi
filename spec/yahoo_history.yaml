@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  version: "8"
+  title: Yahoo Stock API
+servers:
+  - url: https://query2.finance.yahoo.com/v8/finance
+    description: Yahoo Rest API Base Url
+paths:
+  /chart/{symbol}:
+    get:
+      summary: returns data
+      parameters:
+        - in: path
+          name: symbol
+          schema:
+            type: string
+          required: true
+          description: stock symbol
+        - in: query
+          name: interval
+          schema:
+            type: string
+          description: interval
+        - in: query
+          name: range
+          schema:
+            type: string
+          description: range
+      responses:
+        '200':
+          description: A JSON array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryResponse'
+components:
+  schemas:
+    HistoryResponse:
+      type: object
+      properties:
+        chart:
+          $ref: '#/components/schemas/Chart'
+    Chart:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Result'
+        error:
+          $ref: '#/components/schemas/Error'
+    Result:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        timestamp:
+          type: array
+          items:
+            type: integer
+            format: int64
+        indicators:
+          $ref: '#/components/schemas/Indicators'
+    Meta:
+      type: object
+      properties:
+        currency:
+          type: string
+        symbol:
+          type: string
+        exchangeName:
+          type: string
+        instrumentType:
+          type: string
+        firstTradeDate:
+          type: integer
+          format: int64
+        regularMarketTime:
+          type: integer
+          format: int64
+        gmtoffset:
+          type: integer
+        timezone:
+          type: string
+        exchangeTimezoneName:
+          type: string
+        regularMarketPrice:
+          type: number
+        chartPreviousClose:
+          type: number
+        priceHint:
+          type: integer
+        currentTradingPeriod:
+          $ref: '#/components/schemas/CurrentTradingPeriod'
+        dataGranularity:
+          type: string
+        range:
+          type: string
+        validRanges:
+          type: array
+          items:
+            type: string
+    CurrentTradingPeriod:
+      type: object
+      properties:
+        pre:
+          $ref: '#/components/schemas/Time'
+        regular:
+          $ref: '#/components/schemas/Time'
+        post:
+          $ref: '#/components/schemas/Time'
+    Time:
+      type: object
+      properties:
+        timezone:
+          type: string
+        start:
+          type: integer
+          format: int64
+        end:
+          type: integer
+          format: int64
+        gmtoffset:
+          type: integer
+    Indicators:
+      type: object
+      properties:
+        quote:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartQuote'
+        adjclose:
+          type: array
+          items:
+            $ref: '#/components/schemas/Adjclose'
+    ChartQuote:
+      type: object
+      properties:
+        open:
+          type: array
+          items:
+            type: number
+        high:
+          type: array
+          items:
+            type: number
+        low:
+          type: array
+          items:
+            type: number
+        volume:
+          type: array
+          items:
+            type: number
+        close:
+          type: array
+          items:
+            type: number
+    Adjclose:
+      type: object
+      properties:
+        adjclose:
+          type: array
+          items:
+            type: number
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
