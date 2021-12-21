@@ -13,12 +13,10 @@ import de.virnich.yahooApi.model.History
 import de.virnich.yahooApi.model.HistoryMapper
 import de.virnich.yahooApi.model.request.HistoryRequest
 import de.virnich.yahooApi.model.request.HistoryRequestBuilder
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.apache.commons.lang3.StringUtils
 import java.io.IOException
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 
 /**
  * [YahooClient] is a lightweight Wrapper for the Yahoo Finance API. It may be used to query current quotes or
@@ -32,7 +30,7 @@ import java.net.http.HttpResponse
  */
 class YahooClient {
 
-    private val httpClient: HttpClient = HttpClient.newHttpClient()
+    private val okHttpClient: OkHttpClient = OkHttpClient()
     private val objectMapper: ObjectMapper =
         jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     private val historyMapper: HistoryMapper = HistoryMapper()
@@ -47,7 +45,7 @@ class YahooClient {
      * @throws NoDataAvailableException if there is no data available for the requested symbol
      * @throws YahooApiNotReachableException if there is a problem receiving the data
      */
-    fun getQuotes(symbols: List<String>): QuoteResponse {
+    fun getQuote(symbols: List<String>): QuoteResponse {
 
         if (symbols.isEmpty()) {
             throw IllegalArgumentException("You have to provide at least one symbol!")
@@ -56,18 +54,13 @@ class YahooClient {
         val symbolParameter = symbols.joinToString(",")
         val url = "${Constants.YAHOO_QUOTE_URL}quote?symbols=$symbolParameter"
 
-        try {
-            val request = HttpRequest.newBuilder(URI(url)).build()
-            val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        val json = getJson(url)
+        val quoteResponse: QuoteResponse = objectMapper.readValue(json)
 
-            val quoteResponse: QuoteResponse = handleQuoteResponse(response)
-            if (quoteResponse.quoteResponse?.result!!.isEmpty()) {
-                throw NoDataAvailableException(symbolParameter)
-            }
-            return quoteResponse
-        } catch (ex: IOException) {
-            throw YahooApiNotReachableException(url, ex)
+        if (quoteResponse.quoteResponse?.result!!.isEmpty()) {
+            throw NoDataAvailableException(symbolParameter)
         }
+        return quoteResponse
     }
 
     /**
@@ -80,13 +73,13 @@ class YahooClient {
      * @throws NoDataAvailableException if there is no data available for the requested symbol
      * @throws YahooApiNotReachableException if there is a problem receiving the data
      */
-    fun getQuotes(symbol: String): QuoteResponse {
+    fun getQuote(symbol: String): QuoteResponse {
 
         if (StringUtils.isBlank(symbol)) {
             throw IllegalArgumentException("Symbol cannot be empty!")
         }
 
-        return getQuotes(listOf(symbol))
+        return getQuote(listOf(symbol))
     }
 
     /**
@@ -103,19 +96,14 @@ class YahooClient {
 
         val url = "${Constants.YAHOO_CHART_URL}chart/${historyRequest.symbol}?${historyRequest.toParameterString()}"
 
-        try {
-            val request = HttpRequest.newBuilder(URI(url)).GET().build()
-            val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-            val historyResponse: HistoryResponse = handleHistoryResponse(response)
+        val json = getJson(url)
+        val historyResponse: HistoryResponse = objectMapper.readValue(json)
 
-            if (historyResponse.chart?.result == null || historyResponse.chart.result.isEmpty()) {
-                throw NoDataAvailableException(historyRequest.symbol)
-            }
-
-            return historyResponse
-        } catch (ex: IOException) {
-            throw YahooApiNotReachableException(url, ex)
+        if (historyResponse.chart?.result == null || historyResponse.chart.result.isEmpty()) {
+            throw NoDataAvailableException(historyRequest.symbol)
         }
+
+        return historyResponse
     }
 
     /**
@@ -149,46 +137,22 @@ class YahooClient {
         }
 
         val url = "${Constants.YAHOO_SEARCH_URL}search?q=$term&newsCount=0"
+
+        val json = getJson(url)
+        return objectMapper.readValue(json)
+    }
+
+    private fun getJson(url: String): String {
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
         try {
-
-            val request = HttpRequest.newBuilder(URI(url)).GET().build()
-            val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-
-            return handleSearchResponse(response)
+            val response = okHttpClient.newCall(request).execute()
+            return response.body!!.string()
         } catch (ex: IOException) {
             throw YahooApiNotReachableException(url, ex)
-        }
-    }
-
-    private fun handleHistoryResponse(response: HttpResponse<String>): HistoryResponse {
-
-        val historyResponse: HistoryResponse = objectMapper.readValue(response.body())
-        if (response.statusCode() == 200) {
-            return historyResponse
-        } else {
-            val errorMessage = historyResponse.chart?.error?.description ?: ""
-            throw RuntimeException("Error querying data from ${response.request().uri()}. Error message: $errorMessage")
-        }
-    }
-
-    private fun handleQuoteResponse(response: HttpResponse<String>): QuoteResponse {
-
-        val quoteResponse: QuoteResponse = objectMapper.readValue(response.body())
-        if (response.statusCode() == 200) {
-            return quoteResponse
-        } else {
-            val errorMessage = quoteResponse.quoteResponse?.error?.description ?: ""
-            throw RuntimeException("Error querying data from ${response.request().uri()}. Error message: $errorMessage")
-        }
-    }
-
-    private fun handleSearchResponse(response: HttpResponse<String>): SearchResponse {
-
-        val searchResponse: SearchResponse = objectMapper.readValue(response.body())
-        if (response.statusCode() == 200) {
-            return searchResponse
-        } else {
-            throw RuntimeException("Error querying data from ${response.request().uri()}!")
         }
     }
 }

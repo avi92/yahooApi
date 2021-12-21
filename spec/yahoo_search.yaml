@@ -31,8 +31,8 @@ components:
         quotes:
           type: array
           items:
-            $ref: '#/components/schemas/Quote'
-    Quote:
+            $ref: '#/components/schemas/SearchResult'
+    SearchResult:
       type: object
       properties:
         exchange:

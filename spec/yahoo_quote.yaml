@@ -70,7 +70,7 @@ components:
         priceHint:
           type: integer
         regularMarketChange:
-          type: integer
+          type: number
         regularMarketChangePercent:
           type: number
         regularMarketTime:
@@ -141,6 +141,7 @@ components:
           type: number
         sharesOutstanding:
           type: integer
+          format: int64
         bookValue:
           type: number
         fiftyDayAverage:

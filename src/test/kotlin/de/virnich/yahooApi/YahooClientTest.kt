@@ -57,7 +57,7 @@ internal class YahooClientTest {
     @Test
     fun `get quote`() {
 
-        val response = yahooClient.getQuotes("ADN1.DE")
+        val response = yahooClient.getQuote("AAPL")
 
         assert(response.quoteResponse != null)
     }
@@ -65,7 +65,7 @@ internal class YahooClientTest {
     @Test
     fun `get quotes`() {
 
-        val response = yahooClient.getQuotes(listOf("AAPL", "ADN1.DE"))
+        val response = yahooClient.getQuote(listOf("AAPL", "ADN1.DE"))
 
         assert(response.quoteResponse!!.result!!.size == 2)
     }
@@ -73,7 +73,7 @@ internal class YahooClientTest {
     @Test
     fun `get quote invalid symbol`() {
 
-        assertThrows<NoDataAvailableException> { yahooClient.getQuotes("symbol") }
+        assertThrows<NoDataAvailableException> { yahooClient.getQuote("symbol") }
     }
 
     @Test
