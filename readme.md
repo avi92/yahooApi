@@ -33,7 +33,7 @@ This library may be used to query financial stock data from the publicly availab
 
 Query quote for single symbol
 ```kotlin
-yahooClient.getQuotes("AAPL")
+yahooClient.getQuote("AAPL")
 ```
 Query multiple symbols at once
 ```kotlin

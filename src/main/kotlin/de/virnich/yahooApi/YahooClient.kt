@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.yahoo.finance.query1.models.Quote
 import com.yahoo.finance.query1.models.QuoteResponse
 import com.yahoo.finance.query1.models.SearchResponse
 import com.yahoo.finance.query2.models.HistoryResponse
@@ -39,13 +40,13 @@ class YahooClient {
      * Returns a [QuoteResponse] for the requested symbols.
      *
      * @param symbols Symbols to fetch the quote for.
-     * @return [QuoteResponse] Data as returned by the Yahoo API.
+     * @return [List]<[Quote]> Data as returned by the Yahoo API.
      *
      * @throws IllegalArgumentException if there was no input symbol provided
      * @throws NoDataAvailableException if there is no data available for the requested symbol
      * @throws YahooApiNotReachableException if there is a problem receiving the data
      */
-    fun getQuote(symbols: List<String>): QuoteResponse {
+    fun getQuote(symbols: List<String>): List<Quote> {
 
         if (symbols.isEmpty()) {
             throw IllegalArgumentException("You have to provide at least one symbol!")
@@ -60,26 +61,34 @@ class YahooClient {
         if (quoteResponse.quoteResponse?.result!!.isEmpty()) {
             throw NoDataAvailableException(symbolParameter)
         }
-        return quoteResponse
+
+        val error = quoteResponse.quoteResponse.error
+
+        if (error != null) {
+            // TODO: test and document; replace by custom exception
+            throw RuntimeException("${error.code} ${error.description}")
+        } else {
+            return quoteResponse.quoteResponse.result
+        }
     }
 
     /**
      * Returns a [QuoteResponse] for the requested symbol.
      *
      * @param symbol Symbol to fetch the quote for.
-     * @return [QuoteResponse] Data as returned by the Yahoo API.
+     * @return [Quote] Data as returned by the Yahoo API.
      *
      * @throws IllegalArgumentException if there was no input symbol provided
      * @throws NoDataAvailableException if there is no data available for the requested symbol
      * @throws YahooApiNotReachableException if there is a problem receiving the data
      */
-    fun getQuote(symbol: String): QuoteResponse {
+    fun getQuote(symbol: String): Quote {
 
         if (StringUtils.isBlank(symbol)) {
             throw IllegalArgumentException("Symbol cannot be empty!")
         }
 
-        return getQuote(listOf(symbol))
+        return getQuote(listOf(symbol))[0]
     }
 
     /**

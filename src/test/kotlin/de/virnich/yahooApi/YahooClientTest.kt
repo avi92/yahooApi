@@ -59,7 +59,7 @@ internal class YahooClientTest {
 
         val response = yahooClient.getQuote("AAPL")
 
-        assert(response.quoteResponse != null)
+        assert(response != null)
     }
 
     @Test
@@ -67,7 +67,7 @@ internal class YahooClientTest {
 
         val response = yahooClient.getQuote(listOf("AAPL", "ADN1.DE"))
 
-        assert(response.quoteResponse!!.result!!.size == 2)
+        assert(response.size == 2)
     }
 
     @Test
