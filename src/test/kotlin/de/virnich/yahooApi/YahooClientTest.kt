@@ -59,7 +59,7 @@ internal class YahooClientTest {
 
         val response = yahooClient.getQuote("AAPL")
 
-        assert(response != null)
+        assert(response.regularMarketPrice != null)
     }
 
     @Test
