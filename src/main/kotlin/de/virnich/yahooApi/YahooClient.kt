@@ -58,17 +58,17 @@ class YahooClient {
         val json = getJson(url)
         val quoteResponse: QuoteResponse = objectMapper.readValue(json)
 
-        if (quoteResponse.quoteResult?.quotes!!.isEmpty()) {
+        if (quoteResponse.quoteResponse?.result!!.isEmpty()) {
             throw NoDataAvailableException(symbolParameter)
         }
 
-        val error = quoteResponse.quoteResult.error
+        val error = quoteResponse.quoteResponse.error
 
         if (error != null) {
             // TODO: test and document; replace by custom exception
             throw RuntimeException("${error.code} ${error.description}")
         } else {
-            return quoteResponse.quoteResult.quotes
+            return quoteResponse.quoteResponse.result
         }
     }
 
