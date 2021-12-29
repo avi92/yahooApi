@@ -38,12 +38,12 @@ components:
     QuoteResponse:
       type: object
       properties:
-        quoteResponse:
+        quoteResult:
           $ref: '#/components/schemas/QuoteResult'
     QuoteResult:
       type: object
       properties:
-        result:
+        quotes:
           type: array
           items:
             $ref: '#/components/schemas/Quote'
