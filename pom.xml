@@ -9,7 +9,7 @@
     <description>Lightweight Kotlin client for Yahoo Finance API.</description>
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.6.0</kotlin.version>
+        <kotlin.version>1.6.21</kotlin.version>
         <jackson.version>2.13.2</jackson.version>
         <junit.version>5.8.2</junit.version>
     </properties>
