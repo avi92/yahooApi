@@ -104,7 +104,7 @@
                             <packageName>com.yahoo.finance.query2</packageName>
                             <configOptions>
                                 <sourceFolder>/</sourceFolder>
-                                <library>restTemplate</library>
+                                <library>spring-boot</library>
                                 <useBeanValidation>false</useBeanValidation>
                             </configOptions>
                         </configuration>
@@ -123,7 +123,7 @@
                             <packageName>com.yahoo.finance.query1</packageName>
                             <configOptions>
                                 <sourceFolder>/</sourceFolder>
-                                <library>restTemplate</library>
+                                <library>spring-boot</library>
                                 <useBeanValidation>false</useBeanValidation>
                             </configOptions>
                         </configuration>
@@ -142,7 +142,7 @@
                             <packageName>com.yahoo.finance.query1</packageName>
                             <configOptions>
                                 <sourceFolder>/</sourceFolder>
-                                <library>restTemplate</library>
+                                <library>spring-boot</library>
                                 <useBeanValidation>false</useBeanValidation>
                             </configOptions>
                         </configuration>
