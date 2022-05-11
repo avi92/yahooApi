@@ -86,6 +86,7 @@ components:
           type: number
         regularMarketVolume:
           type: integer
+          format: int64
         regularMarketPreviousClose:
           type: number
         bid:
@@ -104,8 +105,10 @@ components:
           type: number
         averageDailyVolume3Month:
           type: integer
+          format: int64
         averageDailyVolume10Day:
           type: integer
+          format: int64
         fiftyTwoWeekLowChange:
           type: number
         fiftyTwoWeekLowChangePercent:

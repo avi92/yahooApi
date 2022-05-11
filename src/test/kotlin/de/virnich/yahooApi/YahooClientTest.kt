@@ -57,7 +57,7 @@ internal class YahooClientTest {
     @Test
     fun `get quote`() {
 
-        val response = yahooClient.getQuote("AAPL")
+        val response = yahooClient.getQuote("BTC-EUR")
 
         assert(response.regularMarketPrice != null)
     }
@@ -65,7 +65,7 @@ internal class YahooClientTest {
     @Test
     fun `get quotes`() {
 
-        val response = yahooClient.getQuote(listOf("AAPL", "ADN1.DE"))
+        val response = yahooClient.getQuotes(listOf("BTC-USD","GBTC","BITO","BTC-CAD","BTC=F","MBT=F","BTC-EUR"))
 
         assert(response.size == 2)
     }

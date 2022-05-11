@@ -46,7 +46,7 @@ class YahooClient {
      * @throws NoDataAvailableException if there is no data available for the requested symbol
      * @throws YahooApiNotReachableException if there is a problem receiving the data
      */
-    fun getQuote(symbols: List<String>): List<Quote> {
+    fun getQuotes(symbols: List<String>): List<Quote> {
 
         if (symbols.isEmpty()) {
             throw IllegalArgumentException("You have to provide at least one symbol!")
@@ -85,7 +85,7 @@ class YahooClient {
             throw IllegalArgumentException("Symbol cannot be empty!")
         }
 
-        return getQuote(listOf(symbol))[0]
+        return getQuotes(listOf(symbol))[0]
     }
 
     /**
